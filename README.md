@@ -12,11 +12,11 @@ The platform transforms AI recommendations from a black-box experience into a tr
 
 ### Application
 
-https://trustlens-ai-three.vercel.app/
+https://trustlens-ai-beta.vercel.app/
 
 ### GitHub Repository
 
-https://github.com/sathvika32427/trustlens-ai
+https://github.com/Sriharshitha156/trustlens-ai
 
 ---
 
@@ -521,7 +521,7 @@ trustlens-ai/
 Clone the repository:
 
 ```bash
-git clone https://github.com/sathvika32427/trustlens-ai.git
+git clone https://github.com/Sriharshitha156/trustlens-ai.git
 ```
 
 Move into project directory:

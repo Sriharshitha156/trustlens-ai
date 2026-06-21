@@ -193,7 +193,7 @@ control discoverability is the top improvement area.
 
 | Deliverable | Location |
 |-------------|----------|
-| Interactive prototype | Live deployment + this repo |
+| Interactive prototype | Live: https://trustlens-ai-beta.vercel.app/ · Code: https://github.com/Sriharshitha156/trustlens-ai |
 | Design rationale deck | `docs/TrustLens-AI-Deck.pptx`, `docs/slide-deck.html` |
 | Usability test report | `docs/USABILITY_TEST_REPORT.md`, `docs/usability-report.html` |
 | Accessibility audit | `docs/ACCESSIBILITY.md` |
