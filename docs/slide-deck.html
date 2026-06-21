@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TrustLens AI — Design Rationale Deck</title>
+<style>
+  :root{ --bg:#0B1220; --card:#111c30; --blue:#0076CE; --blue2:#1DA1F2; --txt:#F8FAFC;
+         --sec:#CBD5E1; --mut:#94A3B8; --line:#27384f; --ok:#22C55E; --warn:#F59E0B; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{ background:var(--bg); color:var(--txt); font-family:"Segoe UI",Roboto,Arial,sans-serif;
+        overflow:hidden; }
+  .slide{ display:none; height:100vh; width:100vw; padding:6vh 8vw; flex-direction:column;
+          justify-content:center; }
+  .slide.active{ display:flex; animation:fade .35s ease; }
+  @keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+  .kicker{ color:var(--blue2); font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+           font-size:14px; margin-bottom:14px; }
+  h1{ font-size:54px; line-height:1.05; margin-bottom:16px; }
+  h2{ font-size:38px; line-height:1.1; margin-bottom:22px; }
+  p,li{ font-size:21px; color:var(--sec); line-height:1.5; }
+  li{ margin:10px 0; }
+  ul{ padding-left:26px; }
+  strong{ color:var(--txt); }
+  .big{ font-size:26px; }
+  .lead{ font-size:24px; color:var(--mut); margin-bottom:8px; }
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-top:10px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 26px; }
+  .card h3{ font-size:20px; color:var(--blue2); margin-bottom:10px; }
+  .card p,.card li{ font-size:17px; }
+  table{ border-collapse:collapse; width:100%; margin-top:12px; }
+  td,th{ border:1px solid var(--line); padding:9px 14px; text-align:left; font-size:17px; }
+  th{ background:#16243a; color:var(--txt); }
+  td{ color:var(--sec); }
+  .metric{ display:flex; gap:36px; margin-top:18px; flex-wrap:wrap; }
+  .metric div{ background:var(--card); border:1px solid var(--line); border-radius:14px;
+               padding:18px 26px; min-width:180px; }
+  .metric .n{ font-size:44px; font-weight:800; color:var(--blue2); }
+  .metric .l{ font-size:15px; color:var(--mut); }
+  .tag{ display:inline-block; background:rgba(0,118,206,.18); color:var(--blue2);
+        border-radius:999px; padding:4px 14px; font-size:15px; font-weight:700; margin:4px 6px 0 0; }
+  .nav{ position:fixed; bottom:18px; right:24px; display:flex; gap:10px; align-items:center; z-index:10; }
+  .nav button{ background:var(--card); color:var(--txt); border:1px solid var(--line);
+               border-radius:8px; padding:8px 14px; font-size:16px; cursor:pointer; }
+  .nav button:hover{ border-color:var(--blue2); }
+  .count{ position:fixed; bottom:24px; left:24px; color:var(--mut); font-size:15px; z-index:10; }
+  .bar{ position:fixed; top:0; left:0; height:4px; background:var(--blue); transition:width .3s; z-index:10; }
+  .ok{color:var(--ok);} .warn{color:var(--warn);}
+  @media print{
+    body{overflow:visible; height:auto;}
+    .slide{ display:flex !important; page-break-after:always; height:100vh; }
+    .nav,.count,.bar{ display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+
+<!-- 1 -->
+<section class="slide active">
+  <div class="kicker">Dell AI Future Minds Hackathon 2026 · Team AI Mavericks</div>
+  <h1>TrustLens&nbsp;AI</h1>
+  <p class="lead">Transparent &amp; Trustworthy AI Agent Interfaces for IT Operations</p>
+  <p class="big" style="margin-top:18px; color:var(--txt)">“We turn opaque AI recommendations into decisions an IT admin can <strong>understand, question, and stand behind.</strong>”</p>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="kicker">The Problem</div>
+  <h2>AI agents act — but their interfaces are opaque</h2>
+  <div class="cols">
+    <div class="card"><h3>Opacity</h3><p>No view into <em>why</em> a recommendation was made — what data, what logic.</p></div>
+    <div class="card"><h3>Calibration uncertainty</h3><p>“87%” tells you nothing about whether to trust it or question it.</p></div>
+    <div class="card"><h3>Accountability gap</h3><p>When AI is wrong, there's no usable audit trail to course-correct.</p></div>
+    <div class="card"><h3>Result: a trust deficit</h3><p>Hesitation, manual overrides, or avoidance — killing the value AI should deliver.</p></div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="kicker">Who We Designed For</div>
+  <h2>Three personas, one platform</h2>
+  <table>
+    <tr><th>Persona</th><th>Needs</th><th>What we gave them</th></tr>
+    <tr><td><strong>IT Admin</strong> (primary)</td><td>Speed, accuracy, audit traceability</td><td>Governance dashboard, Trust Analytics, Audit Center, override authority</td></tr>
+    <tr><td><strong>Security Analyst</strong></td><td>Evidence + confidence to escalate</td><td>Evidence weighting, similar cases, outcome learning</td></tr>
+    <tr><td><strong>Non-tech stakeholder</strong></td><td>Plain-language “what &amp; why”</td><td>Simplified view, plain audit log</td></tr>
+  </table>
+  <p style="margin-top:18px"><strong>Key insight:</strong> same data, three lenses — the UI is role-gated, not three separate apps.</p>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="kicker">Design Principles</div>
+  <h2>How we build calibrated trust</h2>
+  <ul>
+    <li><strong>No ML jargon, ever.</strong> Confidence is a band (“High”, “Review Recommended”), never a raw probability.</li>
+    <li><strong>Show the reasoning, not just the verdict.</strong> Every card answers <em>why</em>.</li>
+    <li><strong>Human-in-the-loop by default.</strong> No consequential action without explicit confirmation.</li>
+    <li><strong>Make doubt visible.</strong> Limitations and counter-considerations are first-class.</li>
+    <li><strong>Calibrated trust &gt; blind trust.</strong> History sits next to every confidence score.</li>
+  </ul>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="kicker">Core Requirement</div>
+  <h2>The five mandatory transparency elements</h2>
+  <table>
+    <tr><th>Element</th><th>In TrustLens</th></tr>
+    <tr><td>Reasoning steps</td><td>7-step “Why Did The AI Recommend This?” + evidence weighting</td></tr>
+    <tr><td>Confidence level</td><td>Qualitative bands + plain explanation (no raw %)</td></tr>
+    <tr><td>Data source attribution</td><td>Source cards with trust levels</td></tr>
+    <tr><td>Known limitations</td><td>AI Limitation Awareness + Counter Consideration + ledger weaknesses</td></tr>
+    <tr><td>Human-in-the-loop</td><td>Approve / Override / Escalate + Adaptive Approval Gate</td></tr>
+  </table>
+  <p style="margin-top:14px" class="ok">✓ All five are present and mandatory in the prototype.</p>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="kicker">Signature Pattern #1</div>
+  <h2>Calibrated confidence, not a raw number</h2>
+  <div class="cols">
+    <div class="card"><h3>Before</h3><p>“87%” — meaningless on its own.</p></div>
+    <div class="card"><h3>After</h3><p>“Review Recommended — based on telemetry from 342 similar devices over 14 days.”</p></div>
+  </div>
+  <p style="margin-top:18px">Paired with the <strong>Trust Ledger</strong>: “Correct 47 / Incorrect 3 · over-flags Linux devices.” Users calibrate from history + scope, not a number.</p>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="kicker">Signature Pattern #2</div>
+  <h2>Adaptive Approval Gate</h2>
+  <p class="lead">Friction scales with risk — low-risk isn't annoying, high-risk isn't reckless.</p>
+  <table>
+    <tr><th>Risk</th><th>Gate</th></tr>
+    <tr><td>Low</td><td>One-click</td></tr>
+    <tr><td>Medium</td><td>Evidence review</td></tr>
+    <tr><td>High</td><td>Evidence + impact review</td></tr>
+    <tr><td>Critical</td><td>+ written justification</td></tr>
+  </table>
+  <p style="margin-top:14px"><strong>Why:</strong> uniform friction trains users to click through everything; adaptive friction preserves attention for what matters.</p>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <div class="kicker">Signature Pattern #3</div>
+  <h2>Designing for doubt</h2>
+  <div class="cols">
+    <div class="card"><h3>Counter Consideration</h3><p>An alternative explanation shown next to the recommendation — fights automation bias.</p></div>
+    <div class="card"><h3>Impact Preview</h3><p>Consequences of <em>both</em> approving and dismissing.</p></div>
+    <div class="card"><h3>AI Incident Cards</h3><p>When AI is wrong: a structured “what failed &amp; lesson learned.”</p></div>
+    <div class="card"><h3>AI Limitation Awareness</h3><p>Flagged telemetry gaps with impact levels.</p></div>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <div class="kicker">Innovation &amp; Stretch Goals</div>
+  <h2>Beyond the brief</h2>
+  <ul>
+    <li><strong>Autonomy Dial</strong> — per-recommendation: Always Ask Me → Recommend Only → Act &amp; Notify (auto-disabled on high risk).</li>
+    <li><strong>Multi-Agent Transparency</strong> — visualizes the Detection → Analysis → Remediation handoff.</li>
+    <li><strong>Accessibility (WCAG 2.1 AA)</strong> — Lighthouse <span class="ok">100/100</span>: focus rings, skip link, reduced motion, ARIA.</li>
+    <li><strong>Audit CSV export</strong> + AI Explainability context on every audit record.</li>
+  </ul>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <div class="kicker">Validation</div>
+  <h2>We tested with real users</h2>
+  <p class="lead">5 moderated think-aloud sessions · non-ML participants</p>
+  <div class="metric">
+    <div><div class="n">5</div><div class="l">participants (meets minimum)</div></div>
+    <div><div class="n">64%</div><div class="l">comprehension (“what &amp; why”)</div></div>
+    <div><div class="n">100</div><div class="l">Lighthouse accessibility</div></div>
+  </div>
+  <p style="margin-top:20px"><strong>Found &amp; fixing:</strong> first-time orientation · confidence-vs-reliability clarity · control discoverability. <span class="warn">“In control” ~50% → our top improvement.</span></p>
+  <p style="margin-top:8px; font-size:17px; color:var(--mut)">Full method &amp; results in our Usability Test Report.</p>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <div class="kicker">Architecture — Honest to the Brief</div>
+  <h2>Simulated AI, real UX focus</h2>
+  <ul>
+    <li><strong>No model trained, no prod backend</strong> — outputs simulated from Faker-generated IT logs (16 linked CSVs).</li>
+    <li><strong>React 19 + Vite + Tailwind</strong>, fully client-side; loads CSVs via PapaParse.</li>
+    <li><strong>Runs offline</strong> — no API key required.</li>
+    <li>60%+ of effort on <strong>design + testing</strong>, per the brief's guidance.</li>
+  </ul>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <div class="kicker">Impact &amp; Next Steps</div>
+  <h2>Calibrated trust, by design</h2>
+  <p class="big" style="color:var(--txt)">Admins lean on AI where it's strong, override where they know better — and always have a record.</p>
+  <p style="margin-top:18px"><strong>Next:</strong> live Hugging Face inference + SHAP rendering · multi-tenant audit retention · A/B test the Autonomy Dial defaults.</p>
+  <p style="margin-top:24px" class="lead">Thank you — live demo now.</p>
+  <div style="margin-top:10px"><span class="tag">Transparency</span><span class="tag">Accountability</span><span class="tag">Human Control</span><span class="tag">Accessibility 100</span></div>
+</section>
+
+<div class="count" id="count"></div>
+<div class="nav">
+  <button onclick="go(-1)">◀ Prev</button>
+  <button onclick="go(1)">Next ▶</button>
+</div>
+
+<script>
+  let i = 0;
+  const slides = document.querySelectorAll('.slide');
+  const bar = document.getElementById('bar');
+  const count = document.getElementById('count');
+  function show(n){
+    slides[i].classList.remove('active');
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides[i].classList.add('active');
+    bar.style.width = ((i+1)/slides.length*100) + '%';
+    count.textContent = (i+1) + ' / ' + slides.length;
+  }
+  function go(d){ show(i+d); }
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') go(1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp') go(-1);
+    if(e.key==='Home') show(0);
+    if(e.key==='End') show(slides.length-1);
+  });
+  show(0);
+</script>
+</body>
+</html>
