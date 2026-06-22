@@ -9,9 +9,10 @@ interface Props {
 type Impact = "Low" | "Med" | "High";
 
 function impactColor(level: Impact): string {
-  if (level === "High") return "var(--tl-danger)";
-  if (level === "Med") return "var(--tl-warning)";
-  return "var(--tl-text-muted)";
+  // AA-contrast-safe brights on the dark base.
+  if (level === "High") return "#F87171";
+  if (level === "Med") return "#FBBF24";
+  return "#CBD5E1";
 }
 
 const MED_KEYWORDS = ["offline", "unknown", "incomplete", "outage", "missing", "staging", "vpn"];

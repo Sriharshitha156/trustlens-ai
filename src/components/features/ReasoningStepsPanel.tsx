@@ -96,7 +96,7 @@ export default function ReasoningStepsPanel({ bundle }: Props) {
     <section className="tl-panel" aria-labelledby="reasoning-steps-title">
       <h3 id="reasoning-steps-title" className="tl-panel-title flex items-center gap-2">
         <Brain className="h-5 w-5 text-[var(--tl-dell-blue-light)]" />
-        Why Did The AI Recommend This?
+        Decision Factors
       </h3>
       <p className="mb-5 text-sm text-[var(--tl-text-secondary)]">
         The agent's reasoning, broken into plain-language steps.

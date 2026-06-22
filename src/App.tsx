@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
 import RecommendationExplorer from "./components/RecommendationExplorer";
-import AuditFeed from "./components/AuditFeed";
 import AuditCenter from "./components/AuditCenter";
 import TrustAnalytics from "./components/TrustAnalytics";
 import AIHealthPage from "./components/AIHealthPage";
@@ -144,7 +143,7 @@ export default function App() {
         return (
           <Dashboard
             activeRole={activeRole}
-            setSelectedId={openDetailsModal}
+            setSelectedId={setSelectedId}
             setCurrentTab={setCurrentTab}
           />
         );
@@ -157,16 +156,15 @@ export default function App() {
             onBack={() => setCurrentTab("dashboard")}
           />
         ) : (
-          <Dashboard activeRole={activeRole} setSelectedId={openDetailsModal} setCurrentTab={setCurrentTab} />
+          <Dashboard activeRole={activeRole} setSelectedId={setSelectedId} setCurrentTab={setCurrentTab} />
         );
       case "trust":
         return <TrustAnalytics />;
       case "ai-health":
         return <AIHealthPage />;
       case "audit-center":
-        return <AuditCenter />;
       case "audit":
-        return <AuditFeed activeRole={activeRole} />;
+        return <AuditCenter activeRole={activeRole} />;
       case "notifications":
         return (
           <Notifications
@@ -196,14 +194,14 @@ export default function App() {
             }}
             onViewActivityLog={() => {
               setConfirmation(null);
-              setCurrentTab(getRoleConfig(activeRole).canAccessAuditCenter ? "audit-center" : "audit");
+              setCurrentTab("audit-center");
             }}
           />
         ) : (
-          <Dashboard activeRole={activeRole} setSelectedId={openDetailsModal} setCurrentTab={setCurrentTab} />
+          <Dashboard activeRole={activeRole} setSelectedId={setSelectedId} setCurrentTab={setCurrentTab} />
         );
       default:
-        return <Dashboard activeRole={activeRole} setSelectedId={openDetailsModal} setCurrentTab={setCurrentTab} />;
+        return <Dashboard activeRole={activeRole} setSelectedId={setSelectedId} setCurrentTab={setCurrentTab} />;
     }
   };
 

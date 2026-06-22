@@ -9,9 +9,10 @@ interface Props {
 type Impact = "Low" | "Medium" | "High";
 
 function impactColor(level: Impact): string {
-  if (level === "High") return "var(--tl-danger)";
-  if (level === "Medium") return "var(--tl-warning)";
-  return "var(--tl-text-muted)";
+  // AA-contrast-safe brights on the dark base.
+  if (level === "High") return "#F87171";
+  if (level === "Medium") return "#FBBF24";
+  return "#CBD5E1";
 }
 
 /**

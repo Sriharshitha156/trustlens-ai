@@ -1,14 +1,12 @@
 import { useMemo } from "react";
 import {
   Shield,
-  ShieldAlert,
   Scale,
   Gavel,
   Monitor,
   Bell,
   History,
   ChevronRight,
-  Activity,
 } from "lucide-react";
 import { Role, RecommendationRow } from "../types/datasets";
 import { useAppData } from "../context/AppDataContext";
@@ -16,6 +14,7 @@ import { filterRecommendationsByRole } from "../lib/dataLoader";
 import { CURRENT_EMPLOYEE } from "../roleConfig";
 import KpiSection from "./shared/KpiSection";
 import RecommendationSummaryRow from "./shared/RecommendationSummaryRow";
+import RecommendationBrowser from "./features/RecommendationBrowser";
 
 interface Props {
   activeRole: Role;
@@ -31,11 +30,15 @@ export default function Dashboard({ activeRole, setSelectedId, setCurrentTab }: 
     [recommendations, activeRole, data],
   );
 
-  const queue = filtered.filter((r) => r.status === "Pending").slice(0, 12);
   const metrics = orgMetrics!;
 
   const openExplorer = (rec: RecommendationRow) => {
     setSelectedId(rec.recommendation_id);
+    setCurrentTab("explorer");
+  };
+
+  const openById = (id: string) => {
+    setSelectedId(id);
     setCurrentTab("explorer");
   };
 
@@ -55,15 +58,18 @@ export default function Dashboard({ activeRole, setSelectedId, setCurrentTab }: 
 
   if (activeRole === Role.SECURITY_ANALYST) {
     return (
-      <AnalystView recommendations={filtered} onOpen={openExplorer} metrics={metrics} />
+      <AnalystView
+        recommendations={filtered}
+        onOpenId={openById}
+        metrics={metrics}
+      />
     );
   }
 
   return (
     <AdminView
-      queue={queue}
       metrics={metrics}
-      onOpen={openExplorer}
+      onOpenId={openById}
       setCurrentTab={setCurrentTab}
       overrideRate={metrics.total ? Math.round((metrics.overridden / metrics.total) * 100) : 0}
       escalationRate={metrics.total ? Math.round((metrics.escalated / metrics.total) * 100) : 0}
@@ -85,16 +91,14 @@ function PageHeader({ badge, title, subtitle }: { badge: string; title: string; 
 }
 
 function AdminView({
-  queue,
   metrics,
-  onOpen,
+  onOpenId,
   setCurrentTab,
   overrideRate,
   escalationRate,
 }: {
-  queue: RecommendationRow[];
   metrics: NonNullable<ReturnType<typeof useAppData>["orgMetrics"]>;
-  onOpen: (r: RecommendationRow) => void;
+  onOpenId: (id: string) => void;
   setCurrentTab: (t: string) => void;
   overrideRate: number;
   escalationRate: number;
@@ -114,26 +118,9 @@ function AdminView({
       <div className="mx-auto max-w-7xl space-y-6 px-5 py-6 lg:px-8">
         <KpiSection metrics={metrics} />
         <div className="grid gap-6 lg:grid-cols-3">
-          <section className="tl-panel lg:col-span-2">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="tl-panel-title">Recommendation Queue</h2>
-              <span className="text-sm text-[var(--tl-text-muted)]">{queue.length} pending (summary)</span>
-            </div>
-            <p className="mb-4 text-sm text-[var(--tl-text-muted)]">
-              Summary rows only — open Explorer for Trust Ledger, evidence weighting, and controls.
-            </p>
-            <div className="space-y-2">
-              {queue.length === 0 ? (
-                <p className="py-8 text-center text-sm text-[var(--tl-text-muted)] border border-[var(--tl-border)] border-dashed rounded-xl">
-                  No Active Recommendations.
-                </p>
-              ) : (
-                queue.map((rec) => (
-                  <RecommendationSummaryRow key={rec.recommendation_id} recommendation={rec} onOpen={onOpen} />
-                ))
-              )}
-            </div>
-          </section>
+          <div className="lg:col-span-2">
+            <RecommendationBrowser activeRole={Role.IT_ADMIN} onSelect={onOpenId} />
+          </div>
           <div className="space-y-4">
             <Widget title="Compliance Metrics" icon={Scale}>
               <Row label="Avg Trust Index" value={`${avgTrust.toFixed(1)}%`} />
@@ -160,16 +147,15 @@ function AdminView({
 
 function AnalystView({
   recommendations,
-  onOpen,
+  onOpenId,
   metrics,
 }: {
   recommendations: RecommendationRow[];
-  onOpen: (r: RecommendationRow) => void;
+  onOpenId: (id: string) => void;
   metrics: NonNullable<ReturnType<typeof useAppData>["orgMetrics"]>;
 }) {
   const critical = recommendations.filter((r) => r.severity === "Critical").length;
   const high = recommendations.filter((r) => r.severity === "High").length;
-  const queue = recommendations.filter((r) => r.status === "Pending").slice(0, 15);
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -185,23 +171,7 @@ function AnalystView({
           <MiniKpi label="High Severity" value={high} accent="warning" />
           <MiniKpi label="Escalated" value={metrics.escalated} accent="blue" />
         </div>
-        <section className="tl-panel">
-          <h2 className="tl-panel-title flex items-center gap-2">
-            <ShieldAlert className="h-5 w-5 text-[var(--tl-danger)]" />
-            Incident Investigations
-          </h2>
-          <div className="mt-4 space-y-2">
-            {queue.length === 0 ? (
-              <p className="py-8 text-center text-sm text-[var(--tl-text-muted)] border border-[var(--tl-border)] border-dashed rounded-xl">
-                No Active Recommendations.
-              </p>
-            ) : (
-              queue.map((rec) => (
-                <RecommendationSummaryRow key={rec.recommendation_id} recommendation={rec} onOpen={onOpen} />
-              ))
-            )}
-          </div>
-        </section>
+        <RecommendationBrowser activeRole={Role.SECURITY_ANALYST} onSelect={onOpenId} />
       </div>
     </div>
   );

@@ -652,30 +652,32 @@ The problem statement requires all five transparency elements. Here is exactly w
 
 | # | Required element | In TrustLens AI | Component |
 |---|------------------|-----------------|-----------|
-| 1 | **Reasoning steps** | "Why AI Recommended This" + Evidence Timeline + Evidence Weighting | `RecommendationExplorer`, `EvidenceWeightingChart` |
+| 1 | **Reasoning steps** | 7-step "Why Did The AI Recommend This?" trace + evidence weighting (in the Why box) | `ReasoningStepsPanel`, `EvidenceWeightingChart`, `WhyRecommendBox` |
 | 2 | **Confidence level** | Qualitative bands (High / Moderate / Review Recommended / Low) with plain-language explanation — no raw probabilities | `RecommendationExplorer`, dataset `confidence` |
-| 3 | **Data source attribution** | "Data sources" line on every recommendation | `RecommendationExplorer` |
-| 4 | **Known limitations** | Limitations + Counter Consideration + Trust Ledger weaknesses | `CounterConsiderationPanel`, `TrustLedgerPanel` |
+| 3 | **Data source attribution** | Source cards with trust-level badges | `DataSourceAttributionPanel` |
+| 4 | **Known limitations** | AI Limitation Awareness + Counter Consideration + Trust Ledger weaknesses | `AILimitationPanel`, `CounterConsiderationPanel`, `TrustLedgerPanel` |
 | 5 | **Human-in-the-loop controls** | Approve / Override / Escalate + Adaptive Approval Gate | `RecommendationExplorer`, `AdaptiveApprovalGate` |
 
 ---
 
-## 🌟 Stretch Goals Implemented
+## 🌟 Stretch Goals & Signature Features
 
-- **Autonomy Dial** (`AutonomyDial.tsx`) — per-recommendation control: *Always Ask Me → Recommend Only → Act & Notify*. High-risk actions automatically disable full autonomy. The human review controls adapt to the selected level.
-- **Multi-Agent Transparency** (`AgentChainPanel.tsx`) — visualizes the *Detection → Analysis → Remediation* agent handoff behind each recommendation, derived live from the recommendation bundle.
-- **Accessibility (WCAG 2.1 AA)** — keyboard focus rings, skip-to-content link, reduced-motion support, ARIA landmarks/labels. See [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
-- **Audit CSV export** — one-click export of the (filtered) decision trail from the Activity Log for compliance.
+- **High-Risk Decision Courtroom** (`DecisionCourtroom.tsx`) — for High/Critical incidents, an **Advocate Agent** (arguments for action) and a **Challenger Agent** (arguments for caution) interpret the *same evidence*. A **disagreement meter** flags contested cases; high disagreement triggers a "Human Review Recommended" alert and forces written justification in the approval gate. All arguments are derived from existing evidence — no new facts.
+- **Multi-Agent Transparency** (`AgentChainPanel.tsx`) — visualizes the *Detection → Analysis → Remediation* agent handoff behind each recommendation.
+- **Problem-first framing** (`ProblemBanner.tsx`) — every recommendation leads with a plain-language statement of *what's wrong*, before the fix.
+- **Priority triage browser** (`RecommendationBrowser.tsx`) — search, filter (severity/status), and sort by a computed **Priority Score** (risk + business impact + aging + confidence) on the dashboard.
+- **Accessibility (WCAG 2.1 AA)** — keyboard focus rings, skip-to-content link, reduced-motion, ARIA; **Lighthouse 100/100**. See [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
+- **Audit CSV export** — one-click export of the (filtered) decision trail for compliance.
 
 ---
 
 ## 🧩 Enhanced Explainability Panels
 
-- **Reasoning Steps** (`ReasoningStepsPanel.tsx`) — a 7-step "Why Did The AI Recommend This?" trace (evidence → weighting → risk → history → confidence → trust ledger → business impact).
+- **Reasoning Steps** (`ReasoningStepsPanel.tsx`) — a 7-step decision-factor trace (evidence → weighting → risk → history → confidence → trust ledger → business impact).
 - **Data Source Attribution** (`DataSourceAttributionPanel.tsx`) — source cards with trust-level badges.
 - **AI Limitation Awareness** (`AILimitationPanel.tsx`) — limitation warning + flagged telemetry gaps with impact levels.
 - **Data Feeds & Telemetry Health** (`DataFeedsHealthPanel.tsx`) — org-wide data-source trust index + telemetry gaps profile in Trust Analytics.
-- **AI Explainability context in the Audit Center** — sources attributed, flagged gaps, and core reasoning on every audit record.
+- **Audit & Activity Log** (`AuditCenter.tsx`) — a single merged accountability page: KPI summary, search, decision filters, CSV export, and per-record AI Explainability context (sources, gaps, core reasoning).
 
 > All panels are derived from the synthetic dataset so they stay consistent with the data shown.
 

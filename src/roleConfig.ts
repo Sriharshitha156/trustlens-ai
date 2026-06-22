@@ -1,7 +1,6 @@
 import {
   LayoutDashboard,
   Search,
-  History,
   ShieldCheck,
   Shield,
   BarChart3,
@@ -41,8 +40,7 @@ export const roleConfigs: Record<Role, RoleConfig> = {
       { id: "explorer", label: "Recommendation Explorer", icon: Search },
       { id: "trust", label: "Trust Analytics", icon: BarChart3 },
       { id: "ai-health", label: "AI Health", icon: Activity },
-      { id: "audit-center", label: "Audit Center", icon: ClipboardCheck },
-      { id: "audit", label: "Activity Log", icon: History },
+      { id: "audit-center", label: "Audit & Activity Log", icon: ClipboardCheck },
       { id: "notifications", label: "Notifications", icon: Bell },
     ],
     canDecide: true,
@@ -58,7 +56,7 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     navItems: [
       { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
       { id: "explorer", label: "Recommendation Explorer", icon: Search },
-      { id: "audit", label: "Activity Log", icon: History },
+      { id: "audit-center", label: "Audit & Activity Log", icon: ClipboardCheck },
       { id: "notifications", label: "Notifications", icon: Bell },
     ],
     canDecide: true,

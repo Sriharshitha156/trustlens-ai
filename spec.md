@@ -77,45 +77,56 @@ Roles are enforced via `src/roleConfig.ts` (role-gated navigation and permission
 
 ## 6. Functional Specification (Features)
 
-### 6.1 Recommendation Explorer
-Detailed view of a single recommendation. Sections: header (action, status, aging), Trust Ledger,
-Counter Consideration, Impact Preview, Evidence Weighting, Similar Cases, Business Impact,
-Outcome Learning, AI Incident Cards, **Reasoning Steps**, **Data Source Attribution**,
-**AI Limitation Awareness**, **Multi-Agent Handoff**, **Autonomy Dial**, Adaptive Approval Gate,
-Human Review Controls, and the Audit Trail.
+### 6.1 Recommendation (Incident) Explorer
+Detailed view of a single recommendation, ordered problem-first: **Problem Banner** (what's wrong) →
+**Trust Ledger** → **Why Did The AI Recommend This?** box → **Decision Courtroom** (High/Critical only)
+→ Outcome Learning → AI Limitation Awareness → AI Incident Cards (only if an incident exists) →
+Adaptive Approval Gate → Human Review Controls → Audit Trail.
 
-### 6.2 Confidence & Calibration
+The **"Why" box** lists six factors — Counter Consideration, Reasoning, Data Source Attribution,
+Multi-Agent Handoff, Impact Review, Business Impact Score — each as a heading with a **"Know more"**
+modal and a **"Mark reviewed"** toggle. Marking factors reviewed auto-completes the approval gate.
+
+### 6.2 Problem-First Framing
+Every recommendation opens with a plain-language **Problem Banner** stating what is wrong (derived
+from action, severity, device, and top evidence) before showing the recommended fix.
+
+### 6.3 Confidence & Calibration
 - Confidence shown as a labelled band with a plain-language explanation.
 - Paired with the **Trust Ledger** (historical correct/incorrect counts, reliability score, known
   weaknesses) so users calibrate from history, not a single number.
 
-### 6.3 Adaptive Approval Gate
+### 6.4 Adaptive Approval Gate
 Approval friction scales with risk: Low → one-click; Medium → evidence review; High → evidence +
-impact review; Critical → + written justification.
+impact review; Critical → + written justification. Evidence/impact steps auto-complete from the
+"Why" box review toggles; high Courtroom disagreement forces written justification.
 
-### 6.4 Autonomy Dial *(stretch)*
-Per-recommendation control over how independently the AI may act:
-*Always Ask Me → Recommend Only → Act & Notify*. "Act & Notify" is auto-disabled for high-risk
-actions. The human review controls adapt to the selected level.
+### 6.5 High-Risk Decision Courtroom *(signature feature, High/Critical only)*
+An **Advocate Agent** (arguments for action) and a **Challenger Agent** (arguments for caution)
+interpret the *same evidence* — no new facts. A **disagreement score** (from confidence, reliability,
+and false-positive history) drives a meter; **High** disagreement raises a "Human Review Recommended"
+alert and forces written justification. Logic in `src/lib/courtroom.ts`.
 
-### 6.5 Multi-Agent Transparency *(stretch)*
+### 6.6 Multi-Agent Transparency
 Visualises the chain of agents behind one recommendation: **Detection → Analysis → Remediation**,
 including what each agent did and what it handed off. Derived from the recommendation bundle.
 
-### 6.6 Trust Analytics
+### 6.7 Dashboard — Priority Triage Browser
+Search, filter (severity / status), and sort by a computed **Priority Score**
+(`0.35·risk + 0.30·business impact + 0.20·aging + 0.15·confidence`, in `src/lib/priority.ts`).
+Selecting a recommendation opens it in the Explorer. Role-scoped per persona.
+
+### 6.8 Trust Analytics
 Org-wide KPIs, trust timeline, **Data Feeds & Telemetry Health** (data-source trust index +
 telemetry gaps profile), aggregate Trust Breakdown, Human Feedback Analytics, Outcome Learning.
 
-### 6.7 AI Health Dashboard
+### 6.9 AI Health Dashboard
 Daily recommendations, accuracy, false positives, trust index, incident trends.
 
-### 6.8 Audit & Accountability Center
-Every AI recommendation + human decision, with reviewer, reason, outcome, timestamp, an
-**AI Explainability & Data Quality Context** block (sources attributed, flagged telemetry gaps,
-core reasoning), and **CSV export** of the filtered trail.
-
-### 6.9 Activity Log
-Searchable, filterable decision feed scoped to the active role.
+### 6.10 Audit & Activity Log (merged)
+A single accountability page: KPI summary, search, decision filters, **CSV export**, role scoping,
+and per-record **AI Explainability & Data Quality Context** (sources attributed, flagged telemetry
+gaps, core reasoning) with the outcome from `outcomes.csv`.
 
 ---
 
@@ -185,7 +196,7 @@ control discoverability is the top improvement area.
 - Live Hugging Face inference + SHAP/LIME explanation rendering.
 - Persistent multi-tenant audit storage.
 - Formal NASA-TLX scoring and IT-admin-persona recruitment in the next test round.
-- A/B testing Autonomy Dial defaults; forced first-run onboarding (from usability findings).
+- Live "Ask the Courtroom" Q&A via a real model; forced first-run onboarding (from usability findings).
 
 ---
 

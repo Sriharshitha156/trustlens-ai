@@ -105,7 +105,7 @@ Approval friction scales with **risk**, so low-risk isn't annoying and high-risk
 
 ## Slide 9 — Innovation / Stretch Goals Delivered
 
-- **Autonomy Dial** — per-recommendation control: *Always ask me → Recommend only → Act & notify*; the UI adapts the controls to the chosen level.
+- **High-Risk Decision Courtroom** — Advocate vs Challenger agents debate the *same evidence*; a disagreement meter flags contested cases and forces human review.
 - **Multi-Agent Transparency** — visualizes the *Detection → Analysis → Remediation* agent handoff behind one recommendation.
 - **Accessibility** — WCAG 2.1 AA pass: keyboard focus rings, skip-link, landmarks, reduced-motion, AA-contrast palette (see `ACCESSIBILITY.md`).
 - **Audit export** — one-click CSV of the decision trail for compliance.
@@ -134,7 +134,7 @@ Approval friction scales with **risk**, so low-risk isn't annoying and high-risk
 ## Slide 12 — Impact & Next Steps
 
 - **Outcome:** an interface where admins develop *calibrated* trust — lean on AI where it's strong, override where they know better, always with a record.
-- **Next:** live Hugging Face inference + SHAP rendering; multi-tenant audit retention; A/B test the Autonomy Dial defaults.
+- **Next:** live Hugging Face inference + SHAP rendering; multi-tenant audit retention; forced first-run onboarding.
 - **Thank you** — live demo now.
 
 ---
@@ -144,6 +144,6 @@ Approval friction scales with **risk**, so low-risk isn't annoying and high-risk
 2. Walk the 5 elements: reasoning → confidence band → data sources → limitations → controls.
 3. Trip the Adaptive Approval Gate (Critical → justification).
 4. Show Counter Consideration + Impact Preview.
-5. Flip the Autonomy Dial; show controls adapt.
+5. Open a High/Critical incident; show the Decision Courtroom (Advocate vs Challenger) and the disagreement alert.
 6. Open Multi-Agent handoff view.
 7. Approve → land on Audit Center → export CSV.

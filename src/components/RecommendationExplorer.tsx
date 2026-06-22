@@ -4,20 +4,15 @@ import { RecommendationBundle, Role, DecisionType, IncidentCardRow } from "../ty
 import { getRoleConfig } from "../roleConfig";
 import { useAppData } from "../context/AppDataContext";
 import TrustLedgerPanel from "./features/TrustLedgerPanel";
-import ImpactPreviewPanel from "./features/ImpactPreviewPanel";
 import AdaptiveApprovalGate from "./features/AdaptiveApprovalGate";
-import AutonomyDial, { AutonomyLevel } from "./features/AutonomyDial";
-import AgentChainPanel from "./features/AgentChainPanel";
-import ReasoningStepsPanel from "./features/ReasoningStepsPanel";
-import DataSourceAttributionPanel from "./features/DataSourceAttributionPanel";
+import ProblemBanner from "./features/ProblemBanner";
 import AILimitationPanel from "./features/AILimitationPanel";
-import CounterConsiderationPanel from "./features/CounterConsiderationPanel";
 import OutcomeLearningPanel from "./features/OutcomeLearningPanel";
 import AIIncidentCardPanel from "./features/AIIncidentCardPanel";
-import SimilarCasesPanel from "./features/SimilarCasesPanel";
-import EvidenceWeightingChart from "./features/EvidenceWeightingChart";
-import BusinessImpactScore from "./features/BusinessImpactScore";
 import RecommendationAgingIndicator from "./features/RecommendationAgingIndicator";
+import WhyRecommendBox, { ReviewKey } from "./features/WhyRecommendBox";
+import DecisionCourtroom from "./features/DecisionCourtroom";
+import { courtroomAnalysis } from "../lib/courtroom";
 import StatusBadge from "./shared/StatusBadge";
 import Modal from "./Modal";
 import { CheckCircle2, XCircle, ArrowUpRight } from "lucide-react";
@@ -40,19 +35,36 @@ export default function RecommendationExplorer({ activeRole, bundle, onDecision,
   const roleConfig = getRoleConfig(activeRole);
   const rec = bundle.recommendation;
 
-  // Autonomy Dial: how independently the AI may act for this recommendation.
-  const isHighRisk =
-    rec.risk_level === "High" ||
-    rec.risk_level === "Critical" ||
-    bundle.adaptiveApproval?.requires_written_justification === true;
-  const [autonomy, setAutonomy] = useState<AutonomyLevel>("recommend");
-  const effectiveAutonomy: AutonomyLevel = isHighRisk && autonomy === "notify" ? "recommend" : autonomy;
-  const autonomyNote =
-    effectiveAutonomy === "ask"
-      ? "Manual mode — the AI will not act. Use the controls below to decide."
-      : effectiveAutonomy === "notify"
-        ? "Supervised auto — low-risk actions may proceed and notify you. Confirm below to authorize."
-        : "Assisted mode — the AI recommends; your confirmation is required before anything happens.";
+  // High-Risk Decision Courtroom (High/Critical incidents only).
+  const showCourtroom = rec.risk_level === "High" || rec.risk_level === "Critical";
+  const courtroom = courtroomAnalysis(bundle);
+
+  // "Why" box review tracking — drives the Adaptive Approval Gate.
+  const [reviewed, setReviewed] = useState<Record<ReviewKey, boolean>>({
+    counter: false,
+    reasoning: false,
+    dataSource: false,
+    multiAgent: false,
+    impact: false,
+    business: false,
+  });
+  const toggleReviewed = useCallback(
+    (k: ReviewKey) => setReviewed((p) => ({ ...p, [k]: !p[k] })),
+    [],
+  );
+  const evidenceReviewed = reviewed.counter && reviewed.reasoning && reviewed.dataSource;
+  const impactReviewed = reviewed.impact && reviewed.business;
+
+  useEffect(() => {
+    setReviewed({
+      counter: false,
+      reasoning: false,
+      dataSource: false,
+      multiAgent: false,
+      impact: false,
+      business: false,
+    });
+  }, [rec.recommendation_id]);
 
   // Premium Modal state handlers
   const [activeIncident, setActiveIncident] = useState<IncidentCardRow | null>(null);
@@ -92,28 +104,27 @@ export default function RecommendationExplorer({ activeRole, bundle, onDecision,
       </div>
 
       <div className="mx-auto max-w-6xl space-y-6 px-5 py-6 lg:px-8">
+        <ProblemBanner bundle={bundle} />
         <TrustLedgerPanel recommendation={rec} ledger={bundle.trustLedger} onClick={() => setShowLedgerModal(true)} />
-        <CounterConsiderationPanel recommendation={rec} counter={bundle.counterConsideration} />
-        <ImpactPreviewPanel impact={bundle.impactPreview} onClick={() => setShowImpactModal(true)} />
-        <EvidenceWeightingChart weights={bundle.evidenceWeights} />
-        <SimilarCasesPanel cases={bundle.similarCases} />
-        <BusinessImpactScore impact={bundle.businessImpact} onClick={() => setShowBusinessImpactModal(true)} />
+        <WhyRecommendBox bundle={bundle} reviewed={reviewed} onToggle={toggleReviewed} />
+        {showCourtroom && <DecisionCourtroom analysis={courtroom} />}
         <OutcomeLearningPanel outcome={bundle.outcome} ledger={bundle.trustLedger} outcomeStats={outcomeStats ?? {}} />
-        <AIIncidentCardPanel incidents={bundle.incidents} onIncidentClick={(inc) => setActiveIncident(inc)} />
-
-        <ReasoningStepsPanel bundle={bundle} />
-        <DataSourceAttributionPanel recommendation={rec} />
         <AILimitationPanel recommendation={rec} ledger={bundle.trustLedger} />
-
-        <AgentChainPanel bundle={bundle} />
+        {bundle.incidents.length > 0 && (
+          <AIIncidentCardPanel incidents={bundle.incidents} onIncidentClick={(inc) => setActiveIncident(inc)} />
+        )}
 
         {roleConfig.canDecide && (
           <>
-            <AutonomyDial value={autonomy} onChange={setAutonomy} highRisk={isHighRisk} />
-            <AdaptiveApprovalGate adaptive={bundle.adaptiveApproval} onGateChange={handleGateChange} />
+            <AdaptiveApprovalGate
+              adaptive={bundle.adaptiveApproval}
+              evidenceReviewed={evidenceReviewed}
+              impactReviewed={impactReviewed}
+              forceJustification={showCourtroom && courtroom.needsReview}
+              onGateChange={handleGateChange}
+            />
             <section className="tl-panel">
               <h3 className="tl-panel-title">Human Review Controls</h3>
-              <p className="mb-3 text-sm text-[var(--tl-text-secondary)]">{autonomyNote}</p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <button type="button" disabled={!canApprove} onClick={() => setModal("approve")} className="tl-btn-action-approve flex flex-col items-center gap-2 py-5 disabled:opacity-40">
                   <CheckCircle2 className="h-7 w-7" /> Approve

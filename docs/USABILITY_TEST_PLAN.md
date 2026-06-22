@@ -80,7 +80,7 @@ Give one task at a time. Do **not** help unless the participant is fully stuck f
 | T5 | "You agree with it. Approve it — what's required first?" | Completes Adaptive Approval Gate, approves | |
 | T6 | "Imagine you disagreed. Show me how you'd override or escalate." | Uses Override/Escalate control | |
 | T7 | "Later, your manager asks what was decided and by whom. Find that record." | Opens Activity Log / Audit Center, finds entry | |
-| T8 *(opt)* | "Set how independently the AI is allowed to act on low-risk devices." | Uses Autonomy Dial | |
+| T8 *(opt)* | "Open a high-risk recommendation — weigh the arguments for and against before deciding." | Uses the Decision Courtroom (Advocate/Challenger + disagreement) | |
 
 ---
 
