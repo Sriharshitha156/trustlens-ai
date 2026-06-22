@@ -690,7 +690,7 @@ The problem statement requires all five transparency elements. Here is exactly w
 | Product & technical specification | [spec.md](spec.md) |
 | Usability test report (5 participants, findings, limitations) | [docs/USABILITY_TEST_REPORT.md](docs/USABILITY_TEST_REPORT.md) |
 | Usability test plan + NASA-TLX + comprehension quiz | [docs/USABILITY_TEST_PLAN.md](docs/USABILITY_TEST_PLAN.md) |
-| Design rationale deck | [HTML deck](docs/slide-deck.html) · [outline](docs/DESIGN_RATIONALE_DECK.md) · regenerate `.pptx` via `python scripts/generate_deck.py` |
+| Design rationale deck | [outline](docs/DESIGN_RATIONALE_DECK.md) · regenerate `.pptx` via `python scripts/generate_deck.py` |
 | Accessibility audit (WCAG 2.1 AA · Lighthouse 100/100) | [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md) |
 
 ---
